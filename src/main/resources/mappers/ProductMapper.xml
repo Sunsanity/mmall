@@ -176,4 +176,42 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM MMALL_PRODUCT
+    ORDER BY ID ASC
+  </select>
+
+  <select id="selectByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM MMALL_PRODUCT
+    <where>
+      <if test="productName != null">
+        AND NAME LIKE #{productName}
+      </if>
+      <if test="productId != null">
+        AND ID = #{productId}
+      </if>
+    </where>
+    ORDER BY ID ASC
+  </select>
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM MMALL_PRODUCT
+    WHERE STATUS = 1
+    <if test="productName != null">
+      AND NAME LIKE #{productName}
+    </if>
+    <if test="categoryIdList != null">
+      AND CATEGORY_ID IN
+      <foreach collection="categoryIdList" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+      </foreach>
+    </if>
+  </select>
 </mapper>
