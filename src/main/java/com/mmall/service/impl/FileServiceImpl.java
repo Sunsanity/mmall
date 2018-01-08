@@ -3,6 +3,7 @@ package com.mmall.service.impl;
 import com.google.common.collect.Lists;
 import com.mmall.service.IFileService;
 import com.mmall.util.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ import java.util.UUID;
  * Created by hasee on 2017/5/29.
  */
 @Service("iFileService")
+@Slf4j
 public class FileServiceImpl implements IFileService {
 
-    Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     /**
      * 图片上传
@@ -31,7 +32,7 @@ public class FileServiceImpl implements IFileService {
         String fileName = file.getOriginalFilename();
         String targetFileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
         String uploadFileName = UUID.randomUUID().toString() + "." + targetFileExtensionName;
-        logger.info("开始上传文件，文件名为:{},上传路径为:{},新文件名为:{}",fileName,path,uploadFileName);
+        log.info("开始上传文件，文件名为:{},上传路径为:{},新文件名为:{}",fileName,path,uploadFileName);
 
         File fileDir = new File(path);
         if (!fileDir.exists()){
@@ -51,7 +52,7 @@ public class FileServiceImpl implements IFileService {
             targetFile.delete();
 
         } catch (IOException e) {
-            logger.error("上传图片到ftp服务器异常！",e);
+            log.error("上传图片到ftp服务器异常！",e);
             return null;
         }
         return targetFile.getName();
