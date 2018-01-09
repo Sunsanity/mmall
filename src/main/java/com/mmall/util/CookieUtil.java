@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieUtil {
 
     //cookie所在域，写到一级域名两个tomcat都可以访问到cookie
-    private static final String COOKIE_DOMAIN = "xn--gmq18dr0k17bucv74fotz57p.com"; //中文域名转码后
-    //private static final String COOKIE_DOMAIN = ".imooc.com"; //测试domain
+    //private static final String COOKIE_DOMAIN = "xn--gmq18dr0k17bucv74fotz57p.com"; //中文域名转码后
+    private static final String COOKIE_DOMAIN = ".imooc.com"; //测试domain
     //写到浏览器中的cookie的key
     private static final String COOKIE_NAME = "mmall_login_token";
 

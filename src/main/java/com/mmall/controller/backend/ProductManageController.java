@@ -8,7 +8,10 @@ import com.mmall.pojo.User;
 import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JsonUtil;
 import com.mmall.util.PropertiesUtil;
+import com.mmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,14 +41,19 @@ public class ProductManageController {
 
     /**
      * 新增或更新商品
-     * @param session
+     * @param httpServletRequest
      * @param product
      * @return
      */
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse<String> productSave(HttpSession session, Product product){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> productSave(HttpServletRequest httpServletRequest, Product product){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请先登录！");
         }
@@ -63,8 +71,13 @@ public class ProductManageController {
      */
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse<String> setSaleStatus(HttpSession session,Integer productId,Integer status){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> setSaleStatus(HttpServletRequest httpServletRequest,Integer productId,Integer status){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请新登录！");
         }
@@ -76,14 +89,19 @@ public class ProductManageController {
 
     /**
      * 根据商品ID获取商品详情
-     * @param session
+     * @param httpServletRequest
      * @param productId
      * @return
      */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session,Integer productId){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getDetail(HttpServletRequest httpServletRequest,Integer productId){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请新登录！");
         }
@@ -95,15 +113,20 @@ public class ProductManageController {
 
     /**
      * 获取商品列表
-     * @param session
+     * @param httpServletRequest
      * @param pageNum
      * @param pageSize
      * @return
      */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse getList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请新登录！");
         }
@@ -115,7 +138,7 @@ public class ProductManageController {
 
     /**
      * 后台根据商品ID和NAME搜索商品
-     * @param session
+     * @param httpServletRequest
      * @param productName
      * @param productId
      * @param pageNum
@@ -124,8 +147,13 @@ public class ProductManageController {
      */
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse productSearch(HttpSession session,String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse productSearch(HttpServletRequest httpServletRequest,String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请新登录！");
         }
@@ -137,15 +165,20 @@ public class ProductManageController {
 
     /**
      * springMVC上传图片
-     * @param session
+     * @param httpServletRequest
      * @param file
      * @param request
      * @return
      */
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse upload(HttpServletRequest httpServletRequest, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请先登录！");
         }
@@ -164,7 +197,7 @@ public class ProductManageController {
 
     /**
      * 富文本编辑器上传图片
-     * @param session
+     * @param httpServletRequest
      * @param file
      * @param request
      * @param response
@@ -172,9 +205,18 @@ public class ProductManageController {
      */
     @RequestMapping("richtext_img_upload.do")
     @ResponseBody
-    public Map richTextImgUpload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response){
+    public Map richTextImgUpload(HttpServletRequest httpServletRequest, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response){
         Map resultMap = Maps.newHashMap();
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+
+        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        if (org.springframework.util.StringUtils.isEmpty(cookieValue)){
+            resultMap.put("success",false);
+            resultMap.put("msg","请先登录再上传图片！");
+            return resultMap;
+        }
+        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        User user = JsonUtil.string2Obj(userJsonStr,User.class);
+
         if (user == null){
             resultMap.put("success",false);
             resultMap.put("msg","请先登录再上传图片！");
