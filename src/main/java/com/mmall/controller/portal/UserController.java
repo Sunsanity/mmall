@@ -9,6 +9,7 @@ import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
 import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import net.sf.jsqlparser.schema.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,13 +42,16 @@ public class UserController {
     @RequestMapping(value = "login.do",method= RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse){
+        int i = 0;
+        int j = 55/i;
+
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()){
             /*二期存储用户信息方式    start*/
             //向浏览器中写入cookie
             CookieUtil.writeLoginToken(httpServletResponse,session.getId());
             //用户信息改为存储在redis中
-            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
             /*二期存储用户信息方式    end*/
 
             /*一期存储用户信息方式    start*/
@@ -70,7 +74,7 @@ public class UserController {
         String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         CookieUtil.delLoginToken(httpServletRequest,httpServletResponse);
         //退出登录就是把redis中用户的登录信息移除掉就可以了
-        RedisPoolUtil.del(cookieValue);
+        RedisShardedPoolUtil.del(cookieValue);
 
         //一期用session
         //session.removeAttribute(Const.CURRENT_USER);
@@ -112,7 +116,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
-        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        String userJsonStr = RedisShardedPoolUtil.get(cookieValue);
         User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if(user != null){
             return ServerResponse.createBySuccess(user);
@@ -171,7 +175,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
-        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        String userJsonStr = RedisShardedPoolUtil.get(cookieValue);
         User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if(user == null){
             return ServerResponse.createByErrorMessage("用户未登陆，请先登录再修改密码！");
@@ -192,7 +196,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
-        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        String userJsonStr = RedisShardedPoolUtil.get(cookieValue);
         User currentUser = JsonUtil.string2Obj(userJsonStr,User.class);
         if(currentUser == null){
             return ServerResponse.createByErrorMessage("用户未登陆，请先登录再更新个人信息！");
@@ -202,7 +206,7 @@ public class UserController {
         ServerResponse<User> response = iUserService.updateInformation(user);
         if (response.isSuccess()){
             response.getData().setUsername(currentUser.getUsername());
-            RedisPoolUtil.setEx(cookieValue,JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            RedisShardedPoolUtil.setEx(cookieValue,JsonUtil.obj2String(response.getData()),Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }
@@ -219,7 +223,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
-        String userJsonStr = RedisPoolUtil.get(cookieValue);
+        String userJsonStr = RedisShardedPoolUtil.get(cookieValue);
         User user = JsonUtil.string2Obj(userJsonStr,User.class);
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户需要先登陆，status=10！");

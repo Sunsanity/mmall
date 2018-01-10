@@ -2,12 +2,12 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
 import com.mmall.util.RedisPoolUtil;
+import com.mmall.util.RedisShardedPoolUtil;
 import net.sf.jsqlparser.schema.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +127,7 @@ public class UserServiceImpl implements IUserService{
         if(resultCount > 0){
             //向前台返回UUID用于用户修改密码，UUID存放在本地缓存中且有个有效时间，可以有效避免用户的横向越权，恶意修改其他用户的密码
             String forgetToken = UUID.randomUUID().toString();
-            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,60*60*12);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,60*60*12);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("提示问题答案错误，请重新填写答案！");
@@ -148,7 +148,7 @@ public class UserServiceImpl implements IUserService{
         if(validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("用户名不存在，请先确认用户名！");
         }
-        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX+username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX+username);
         if(StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token已经过期，操作失败！");
         }

@@ -23,7 +23,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- 二期新增重置session时间的filter -->
+     <!--二期新增重置session时间的filter-->
     <filter>
         <filter-name>sessionExpireFilter</filter-name>
         <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
@@ -33,15 +33,15 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
-    <!-- 以下filter是用springsession实现的重置session有效期的filter,这里只选择原生和springsession中的其中一个实现session有效期的重置就ok,目前使用原生 -->
-    <!--<filter>-->
-    <!--<filter-name>springSessionRepositoryFilter</filter-name>-->
-    <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-    <!--<filter-name>springSessionRepositoryFilter</filter-name>-->
-    <!--<url-pattern>*.do</url-pattern>-->
-    <!--</filter-mapping>-->
+    <!--使用SpringSession实现session共享，和之前使用原生的redis+cookie+filter+jsonUtil实现同样的效果，二者任选其一就可以-->
+    <!--<filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+    </filter-mapping>-->
 
 
     <listener>
