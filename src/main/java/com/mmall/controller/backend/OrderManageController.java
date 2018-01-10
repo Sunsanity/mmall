@@ -46,7 +46,7 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<PageInfo> orderList(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                               @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -57,9 +57,9 @@ public class OrderManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //调用service查询订单列表数据
-            return iOrderService.manageList(pageNum,pageSize);
         }
-        return ServerResponse.createByErrorMessage("无管理员权限！");
+        return ServerResponse.createByErrorMessage("无管理员权限！");*/
+        return iOrderService.manageList(pageNum,pageSize);
     }
 
     /**
@@ -71,7 +71,7 @@ public class OrderManageController {
     @RequestMapping("detail.do")
     @ResponseBody
     public ServerResponse<OrderVo> orderDetail(HttpServletRequest httpServletRequest, Long orderNo){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -82,9 +82,9 @@ public class OrderManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //调用service查询订单列表数据
-            return iOrderService.manageDetail(orderNo);
         }
-        return ServerResponse.createByErrorMessage("无管理员权限！");
+        return ServerResponse.createByErrorMessage("无管理员权限！");*/
+        return iOrderService.manageDetail(orderNo);
     }
 
     /**
@@ -99,7 +99,7 @@ public class OrderManageController {
     @ResponseBody
     public ServerResponse<PageInfo> orderSearch(HttpServletRequest httpServletRequest,Long orderNo, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                                 @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -110,9 +110,9 @@ public class OrderManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //调用service模糊查询订单列表数据
-            return iOrderService.manageSearch(orderNo,pageNum,pageSize);
         }
-        return ServerResponse.createByErrorMessage("无管理员权限！");
+        return ServerResponse.createByErrorMessage("无管理员权限！");*/
+        return iOrderService.manageSearch(orderNo,pageNum,pageSize);
     }
 
     /**
@@ -124,7 +124,7 @@ public class OrderManageController {
     @RequestMapping("send_goods.do")
     @ResponseBody
     public ServerResponse<String> orderSendGoods(HttpServletRequest httpServletRequest,Long orderNo){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -135,8 +135,8 @@ public class OrderManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //调用service模糊查询订单列表数据
-            return iOrderService.manageSendGoods(orderNo);
         }
-        return ServerResponse.createByErrorMessage("无管理员权限！");
+        return ServerResponse.createByErrorMessage("无管理员权限！");*/
+        return iOrderService.manageSendGoods(orderNo);
     }
 }

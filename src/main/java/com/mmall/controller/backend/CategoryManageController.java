@@ -44,7 +44,7 @@ public class CategoryManageController {
     @RequestMapping("add_category.do")
     @ResponseBody
     public ServerResponse addCategory(HttpServletRequest httpServletRequest, String categoryName, @RequestParam(value = "parentId",defaultValue = "0") int parentId){
-        //先验证用户是否登录
+        /*//先验证用户是否登录
         String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
@@ -57,9 +57,9 @@ public class CategoryManageController {
         //判断当前用户是否有是管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //添加分类逻辑
-            return iCategoryService.addCategory(categoryName,parentId);
         }
-        return ServerResponse.createByErrorMessage("添加分类失败，用户无管理员权限！");
+        return ServerResponse.createByErrorMessage("添加分类失败，用户无管理员权限！");*/
+        return iCategoryService.addCategory(categoryName,parentId);
     }
 
     /**
@@ -72,7 +72,7 @@ public class CategoryManageController {
     @RequestMapping("set_category_name.do")
     @ResponseBody
     public ServerResponse setCategoryName(HttpServletRequest httpServletRequest,Integer categoryId,String categoryName){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -84,9 +84,9 @@ public class CategoryManageController {
         //判断当前用户是否有是管理员
         if (iUserService.checkAdminRole(user).isSuccess()){
             //更改分类名称逻辑
-            return iCategoryService.setCategoryName(categoryId,categoryName);
         }
-        return ServerResponse.createByErrorMessage("修改分类信息失败，用户无管理员权限！");
+        return ServerResponse.createByErrorMessage("修改分类信息失败，用户无管理员权限！");*/
+        return iCategoryService.setCategoryName(categoryId,categoryName);
     }
 
     /**
@@ -98,7 +98,7 @@ public class CategoryManageController {
     @RequestMapping("get_category.do")
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpServletRequest httpServletRequest,@RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -109,10 +109,10 @@ public class CategoryManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //获取节点信息逻辑
-            return iCategoryService.getChildrenParallelCategory(categoryId);
         }else{
             return ServerResponse.createByErrorMessage("无管理员权限，获取节点信息失败！");
-        }
+        }*/
+        return iCategoryService.getChildrenParallelCategory(categoryId);
     }
 
     /**
@@ -124,7 +124,7 @@ public class CategoryManageController {
     @RequestMapping("get_deep_category.do")
     @ResponseBody
     public ServerResponse getCategoryAndDeepCategory(HttpServletRequest httpServletRequest,@RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId){
-        String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
+        /*String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isEmpty(cookieValue)){
             return ServerResponse.createByErrorMessage("用户未登陆，无法获取用户信息！");
         }
@@ -135,8 +135,8 @@ public class CategoryManageController {
         }
         if (iUserService.checkAdminRole(user).isSuccess()){
             //调用service递归查询子节点ID
-            return iCategoryService.selectCategoryAndChildrenById(categoryId);
         }
-        return ServerResponse.createByErrorMessage("非管理员，用户无权限！");
+        return ServerResponse.createByErrorMessage("非管理员，用户无权限！");*/
+        return iCategoryService.selectCategoryAndChildrenById(categoryId);
     }
 }

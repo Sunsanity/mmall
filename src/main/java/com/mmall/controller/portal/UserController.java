@@ -39,12 +39,9 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.do",method= RequestMethod.POST)
+    @RequestMapping(value = "login.do",method= RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse){
-        int i = 0;
-        int j = 55/i;
-
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()){
             /*二期存储用户信息方式    start*/
