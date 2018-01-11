@@ -225,4 +225,23 @@
     MMALL_ORDER
     ORDER BY CREATE_TIME DESC
   </select>
+
+  <!--查询一定时间未付款的订单集合-->
+  <select id="selectOrderStatusByCreateTime" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    MMALL_ORDER
+    WHERE STATUS = #{status}
+    <![CDATA[
+      AND CREATE_TIME <= #{date}
+    ]]>
+    ORDER BY CREATE_TIME DESC
+  </select>
+
+  <update id="closeOrderByOrderId" parameterType="int">
+    UPDATE MMALL_ORDER
+    SET STATUS = 0
+    WHERE ID = #{id}
+  </update>
 </mapper>

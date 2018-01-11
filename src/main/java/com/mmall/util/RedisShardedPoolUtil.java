@@ -79,6 +79,48 @@ public class RedisShardedPoolUtil {
     }
 
     /**
+     * 不存在才set
+     * @param key
+     * @param value
+     * @return
+     */
+    public static Long setnx(String key,String value){
+        ShardedJedis jedis = null;
+        Long result = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.setnx(key,value);
+        }catch (Exception e){
+            log.error("set error key:{} value:{}",key,value,e);
+            RedisShardedPool.returnBrokenResource(jedis);
+            return result;
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    /**
+     * 返回旧值的set方法
+     * @param key
+     * @param value
+     * @return
+     */
+    public static String getset(String key,String value){
+        ShardedJedis jedis = null;
+        String result = null;
+        try {
+            jedis = RedisShardedPool.getJedis();
+            result = jedis.getSet(key, value);
+        }catch (Exception e){
+            log.error("getset error key:{} value:{}",key,value,e);
+            RedisShardedPool.returnBrokenResource(jedis);
+            return result;
+        }
+        RedisShardedPool.returnResource(jedis);
+        return result;
+    }
+
+    /**
      * get方法
      * @param key
      * @return

@@ -27,6 +27,7 @@ import com.mmall.vo.*;
 import com.sun.corba.se.spi.activation.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -657,5 +658,37 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess("发货成功！");
         }
         return ServerResponse.createByErrorMessage("订单不存在！");
+    }
+
+
+    /**
+     * 关闭订单
+     * @param hour
+     */
+    public void closeOrder(int hour) {
+        Date closeDateTime = DateUtils.addHours(new Date(),-hour);
+        //查询指定时间未付款订单集合
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(),DateTimeUtil.dateToStr(closeDateTime));
+
+        for (Order order:orderList){
+            //根据订单号查询订单下的订单项集合
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for (OrderItem item:orderItemList){
+                //此处一定要用商品主键查询库存,否则select for update会造成锁表
+                Integer stock = productMapper.selectStockByProductId(item.getProductId());
+
+                //如果查询到的库存为空,说明这件商品已经被删除,无需修改库存
+                if (stock == null){
+                    continue;
+                }
+
+                Product product = new Product();
+                product.setId(item.getProductId());
+                product.setStock(stock+item.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            orderMapper.closeOrderByOrderId(order.getId());
+            log.info("关闭订单,orderNo = {}",order.getOrderNo());
+        }
     }
 }
