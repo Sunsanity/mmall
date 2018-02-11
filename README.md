@@ -21,7 +21,7 @@
 dev是开发分支，release是发布分支，master分支是主要分支（最新的可用版本）。
 ## 项目什么样？
 ![网站截图](https://github.com/Liweimin0512/MMall_JAVA/blob/master/doc/myweb-1.gif)
-当然，阿里云部署地址，项目仅仅开发完成后端，所有接口测试采用Restlet，[这里是链接](http://www.全宇宙最美的女人.com/index.jsp)
+以上截图源自课程完整课程结果，而目前项目开发完成后端部分，所有接口测试均Restlet模拟请求，阿里云部署地址：[这里是链接](http://www.全宇宙最美的女人.com/index.jsp)
 ## 如何部署上线
   如果你想发布在自己的linux操作系统中，可以运行我编写的自动化发布脚本，根目录下的`deploy.sh`。在此之前，你需要完成如下的步骤：
 * 保证JDK、maven、tomcat、mysql及nginx都已经安装并且正确配置；
